@@ -12,9 +12,33 @@ app.use(bodyParser.urlencoded({extended : true}));
 // ------------------------
 // ROUTES RESOURCES
 // ------------------------
-app.get('/', (req,res)=>{
-	console.log('hello');
-	res.status(200).json({"hello1" : "w1orld1"});
+var temp = [{
+	"id" : "1",
+	"nom" : "Salade Grecque",
+	"description" : "Une bonne salade",
+    "listeIngedrients" : ["Salade", "Tomates", "Olives"],
+    "photo" : "https://img.cuisineaz.com/610x610/2013-12-20/i29173-salade-grecque-minceur.jpg"
+}]
+
+
+app.get('/salades',(req, res)=>{
+	res.status(200).json(temp)
+})
+
+app.post('/salades',(req, res)=>{
+	res.status(200).json(req.body)
+})
+
+app.get('/salades/:idSalade',(req, res)=>{
+	res.status(200).json(temp.pop())
+})
+
+app.put('/salades/:idSalade',(req, res)=>{
+	res.status(204).json()
+})
+
+app.delete('/salades/:idSalade',(req, res)=>{
+    res.status(204).json()
 })
 
 // ------------------------
