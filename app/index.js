@@ -22,7 +22,7 @@ app.set('views', __dirname + '/front');
 
 
 // ------------------------
-// ROUTES RESOURCES
+// RESSOURCES SALADES
 // ------------------------
 var temp = [{
 	"id" : "1",
@@ -33,13 +33,45 @@ var temp = [{
 }]
 
 
+// --- Connexion à la base de donnée mongo docker
+let mongoose = require('mongoose');
+
+let database  = mongoose.connect("mongodb://localhost:27017/salades",{
+    promiseLibrary: require('bluebird'),
+    useNewUrlParser: true
+});
+
+// --- Definition du modèle
+const Schema = mongoose.Schema;
+
+//------------------------------------------- Resources Schema
+let SaladeSchema = new Schema({
+    id      : String,
+    nom		: String,
+	description     : String,
+	listeIngedrients: [String],
+	image: String
+});
+
+mongoose.model('Salade', SaladeSchema);
+
 app.get('/salades',(req, res)=>{
-	res.status(200).json(temp)
+	let Salade = mongoose.model('Salade')
+	Salade.find({}).then((result)=>{
+            res.status(200).json(result)
+        },(err)=>{
+            res.status(400).json(err)
+        })
 })
 
 app.post('/salades',(req, res)=>{
-	temp.push(req.body)
-	res.status(200).json(req.body)
+	let Salade = mongoose.model('Salade');
+	let mySalade = new Salade(req.body);
+	mySalade.save().then((result)=>{
+            res.status(200).json(mySalade)
+        },(err)=>{
+            res.status(400).json(err)
+        })
 })
 
 app.get('/salades/:idSalade',(req, res)=>{
